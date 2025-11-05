@@ -37,7 +37,6 @@ def test_avalanche_message():
     print("Modified ciphertext:", ciphertext2.hex())
     print(f"Bit differences: {diff_bits}/{len(ciphertext1)*8}\n")
 
-
 # Avalance-effect: change one bit in the key (around 50% of the output bits should change)
 def test_avalanche_key():
     plaintext = b"test message1234"
@@ -54,7 +53,6 @@ def test_avalanche_key():
     print("Ciphertext (key1):", ciphertext1.hex())
     print("Ciphertext (key2):", ciphertext2.hex())
     print(f"Bit differences: {diff_bits}/{len(ciphertext1)*8}\n")
-
 
 if __name__ == "__main__":
     test_correctness()
