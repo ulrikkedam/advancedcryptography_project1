@@ -23,15 +23,15 @@ S_BOX = [
 
 # ENCRYPTION FUNCTIONS
 
-def sub_bytes(state):
-    """Apply S-Box substitution to each byte of the state"""
-    for i in range(4):
+def sub_bytes(state): # Hver state byte erstattes med en tilsvarende byte fra S-Boxen. Den giver ikke-lineær substitution, der øger sikkerheden.
+    """Apply S-Box substitution to each byte of the state""" # Eksempelvis a4. Så finder du a4's værdi i S-boxen og erstatter.
+    for i in range(4): 
         for j in range(4):
             state[i][j] = S_BOX[state[i][j]]
     return state
 
-def shift_rows(state):
-    """Shift the rows of the state matrix"""
+def shift_rows(state): # Skubber rækkerne i statem-matrixen mod venstre med forskellig offset (række 0 uændret, række 1 skubbes 1 til venstre, osv.). Det spreder byte-positionerne.
+    """Shift the rows of the state matrix""" # Det skaber diffusion mellem kolonner.
     state[1] = state[1][1:] + state[1][:1]  # shift row 1 left by 1
     state[2] = state[2][2:] + state[2][:2]  # shift row 2 left by 2
     state[3] = state[3][3:] + state[3][:3]  # shift row 3 left by 3
@@ -51,7 +51,8 @@ def mix_single_column(col):
     col[3] = xtime(temp[0]) ^ temp[0] ^ temp[1] ^ temp[2] ^ xtime(temp[3])& 0xFF
     return col
 
-def mix_columns(state):
+def mix_columns(state): # Hver kolonne i state betragtes om et polynomium over GF(2^8). Vi bruger funktionen xtime(a) til at udføre multiplikation mod
+                        # det irreducible polynomium x^8 + x^4 + x^3 + x + 1.
     """Apply MixColumns transformation to all columns"""
     for i in range(4):
         column = [state[j][i] for j in range(4)]
@@ -60,9 +61,9 @@ def mix_columns(state):
             state[j][i] = column[j]
     return state
 
-def add_round_key(state, round_key):
+def add_round_key(state, round_key): # Staten XOR's med rundnøglen ved hjælp af bitvis XOR operation. Bruger den samme nøgle i hver runde i denne simple version.
     """XOR the state with the round key"""
     for i in range(4):
         for j in range(4):
-            state[i][j] ^= round_key[i][j]
+            state[i][j] ^= round_key[i][j] # Hver state byte XOR's med tilsvarende byte i round key. Det blander nøglen ind i data for første gang.
     return state
